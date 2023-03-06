@@ -1,0 +1,5 @@
+../Core/Src/CANbus.c:47:6:CAN_reset	8	static
+../Core/Src/CANbus.c:68:6:CAN_TX	8	static
+../Core/Src/CANbus.c:122:6:HAL_FDCAN_RxFifo0Callback	16	static
+../Core/Src/CANbus.c:252:6:CAN_config	8	static
+../Core/Src/CANbus.c:313:6:rutin_cek_can	8	static

@@ -1,0 +1,11 @@
+../Core/Src/ws2812.c:16:6:Set_LED	24	static
+../Core/Src/ws2812.c:24:6:Set_Brightness	40	static
+../Core/Src/ws2812.c:43:6:WS2812_Send	32	static
+../Core/Src/ws2812.c:85:6:send_led	8	static
+../Core/Src/ws2812.c:91:6:WS2812_Send2	32	static
+../Core/Src/ws2812.c:134:6:charging_led	32	static,ignoring_inline_asm
+../Core/Src/ws2812.c:160:6:ready_pick_led	32	static
+../Core/Src/ws2812.c:175:6:swap_led	32	static
+../Core/Src/ws2812.c:196:6:fault_led	32	static
+../Core/Src/ws2812.c:205:6:standby_led	32	static
+../Core/Src/ws2812.c:214:6:HAL_TIM_PWM_PulseFinishedCallback	16	static

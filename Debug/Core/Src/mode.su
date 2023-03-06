@@ -1,0 +1,7 @@
+../Core/Src/mode.c:17:6:standby_mode	16	static
+../Core/Src/mode.c:44:6:swap_mode	16	static
+../Core/Src/mode.c:78:6:charging_mode	16	static
+../Core/Src/mode.c:137:6:remote_mode	8	static
+../Core/Src/mode.c:142:6:theft_mode	8	static
+../Core/Src/mode.c:147:6:fault_mode	16	static
+../Core/Src/mode.c:183:6:maintenance_mode	8	static
