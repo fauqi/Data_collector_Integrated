@@ -60,8 +60,8 @@ all: main-build
 main-build: data_collector_integrated.elf secondary-outputs
 
 # Tool invocations
-data_collector_integrated.elf data_collector_integrated.map: $(OBJS) $(USER_OBJS) D:\Data\ Folder\ Fauqi\Data_collector\ Integrated\STM32G0B1KBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "data_collector_integrated.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"D:\Data Folder Fauqi\Data_collector Integrated\STM32G0B1KBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="data_collector_integrated.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+data_collector_integrated.elf data_collector_integrated.map: $(OBJS) $(USER_OBJS) D:\Data\ Folder\ Fauqi\Data_collector_Integrated\STM32G0B1KBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "data_collector_integrated.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"D:\Data Folder Fauqi\Data_collector_Integrated\STM32G0B1KBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="data_collector_integrated.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
