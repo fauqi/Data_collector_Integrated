@@ -27,11 +27,11 @@
 #include "stdlib.h"
 #include "string.h"
 #include "math.h"
-//#include <rs485-bus.h>
-//#include <rs485-bus/slave.h>
-//#include <dma_streamer.h>
+#include <rs485-bus.h>
+#include <rs485-bus/slave.h>
+#include <dma_streamer.h>
 //#include "serial_com.h"
-//#include <report.h>
+#include <report.h>
 #include "mode.h"
 #include"ws2812.h"
 //#include"FLASH_SECTOR_H7.h"

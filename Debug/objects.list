@@ -1,6 +1,7 @@
 "./Core/Src/CANbus.o"
 "./Core/Src/main.o"
 "./Core/Src/mode.o"
+"./Core/Src/report.o"
 "./Core/Src/stm32g0xx_hal_msp.o"
 "./Core/Src/stm32g0xx_it.o"
 "./Core/Src/syscalls.o"
