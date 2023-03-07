@@ -102,6 +102,9 @@ TIM_HandleTypeDef htim1;
 DMA_HandleTypeDef hdma_tim1_ch2;
 DMA_HandleTypeDef hdma_tim1_ch3;
 
+UART_HandleTypeDef huart1;
+DMA_HandleTypeDef hdma_usart1_rx;
+
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -113,6 +116,7 @@ static void MX_DMA_Init(void);
 static void MX_FDCAN1_Init(void);
 static void MX_FDCAN2_Init(void);
 static void MX_TIM1_Init(void);
+static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -154,6 +158,7 @@ int main(void)
   MX_FDCAN1_Init();
   MX_FDCAN2_Init();
   MX_TIM1_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   CAN_config();
   slot1.notif=led_standby;
@@ -181,7 +186,7 @@ int main(void)
   while (1)
   {
 
-	  switch(slot1.notif)
+	  	  switch(slot1.notif)
 	 	  {
 	 	  case led_standby:
 	 		 fault_led(&slot1);
@@ -228,54 +233,54 @@ int main(void)
 	 	  }
 
 	 	  switch(slot1.state)
-	 			  {
-	 			  case standby:
-	 				  slot1.notif=led_standby;
-	 				  standby_mode(&slot1);
-	 				  break;
-	 			  case charging:
-	 				  if(slot1.SOC_batt<100&&slot1.charge_state==1)
-	 				  slot1.notif=led_charging;
-	 				  charging_mode(&slot1);
-	 				  break;
-	 			  case fault:
-	 				  slot1.notif=led_fault;
-	 				  fault_mode(&slot1);
-	 				  break;
-	 			  case swap:
-	 				  slot1.notif=led_swap;
-	 				  swap_mode(&slot1);
-	 				  break;
-	 			  default:
-	 				  slot1.notif=standby;
-	 				  slot1.state = standby;
-	 				  break;
-	 			  }
+		  {
+		  case standby:
+			  slot1.notif=led_standby;
+			  standby_mode(&slot1);
+			  break;
+		  case charging:
+			  if(slot1.SOC_batt<100&&slot1.charge_state==1)
+			  slot1.notif=led_charging;
+			  charging_mode(&slot1);
+			  break;
+		  case fault:
+			  slot1.notif=led_fault;
+			  fault_mode(&slot1);
+			  break;
+		  case swap:
+			  slot1.notif=led_swap;
+			  swap_mode(&slot1);
+			  break;
+		  default:
+			  slot1.notif=standby;
+			  slot1.state = standby;
+			  break;
+		  }
 
-	 		  switch(slot2.state)
-	 			  {
-	 			  case standby:
-	 				  slot2.notif=led_standby;
-	 				  standby_mode(&slot2);
-	 				  break;
-	 			  case charging:
-	 				  if(slot2.SOC_batt<100&&slot2.charge_state==1)
-	 				  slot2.notif=led_charging;
-	 				  charging_mode(&slot2);
-	 				  break;
-	 			  case fault:
-	 				  slot2.notif=led_fault;
-	 				  fault_mode(&slot2);
-	 				  break;
-	 			  case swap:
-	 				  slot2.notif=led_swap;
-	 				  swap_mode(&slot2);
-	 				  break;
-	 			  default:
-	 				  slot2.notif=standby;
-	 				  slot2.state = standby;
-	 				  break;
-	 			  }
+	  switch(slot2.state)
+		  {
+		  case standby:
+			  slot2.notif=led_standby;
+			  standby_mode(&slot2);
+			  break;
+		  case charging:
+			  if(slot2.SOC_batt<100&&slot2.charge_state==1)
+			  slot2.notif=led_charging;
+			  charging_mode(&slot2);
+			  break;
+		  case fault:
+			  slot2.notif=led_fault;
+			  fault_mode(&slot2);
+			  break;
+		  case swap:
+			  slot2.notif=led_swap;
+			  swap_mode(&slot2);
+			  break;
+		  default:
+			  slot2.notif=standby;
+			  slot2.state = standby;
+			  break;
+		  }
 	 send_led();
 CAN_TX();
 HAL_Delay(1000);
@@ -439,7 +444,7 @@ static void MX_TIM1_Init(void)
 
   /* USER CODE END TIM1_Init 1 */
   htim1.Instance = TIM1;
-  htim1.Init.Prescaler = 0;
+  htim1.Init.Prescaler = 15;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim1.Init.Period = 79;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -502,6 +507,54 @@ static void MX_TIM1_Init(void)
 
   /* USER CODE END TIM1_Init 2 */
   HAL_TIM_MspPostInit(&htim1);
+
+}
+
+/**
+  * @brief USART1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART1_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART1_Init 0 */
+
+  /* USER CODE END USART1_Init 0 */
+
+  /* USER CODE BEGIN USART1_Init 1 */
+
+  /* USER CODE END USART1_Init 1 */
+  huart1.Instance = USART1;
+  huart1.Init.BaudRate = 115200;
+  huart1.Init.WordLength = UART_WORDLENGTH_8B;
+  huart1.Init.StopBits = UART_STOPBITS_1;
+  huart1.Init.Parity = UART_PARITY_NONE;
+  huart1.Init.Mode = UART_MODE_TX_RX;
+  huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart1.Init.OverSampling = UART_OVERSAMPLING_16;
+  huart1.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+  huart1.Init.ClockPrescaler = UART_PRESCALER_DIV1;
+  huart1.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+  if (HAL_UART_Init(&huart1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_UARTEx_SetTxFifoThreshold(&huart1, UART_TXFIFO_THRESHOLD_1_8) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_UARTEx_SetRxFifoThreshold(&huart1, UART_RXFIFO_THRESHOLD_1_8) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_UARTEx_DisableFifoMode(&huart1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART1_Init 2 */
+
+  /* USER CODE END USART1_Init 2 */
 
 }
 

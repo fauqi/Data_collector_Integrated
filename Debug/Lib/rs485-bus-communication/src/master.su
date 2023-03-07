@@ -1,0 +1,4 @@
+../Lib/rs485-bus-communication/src/master.c:22:6:RS485_Bus_Master_Init	16	static
+../Lib/rs485-bus-communication/src/master.c:28:6:RS485_Bus_Master_Emit	40	static
+../Lib/rs485-bus-communication/src/master.c:56:6:RS485_Bus_Master_Process	24	static
+../Lib/rs485-bus-communication/src/master.c:173:13:onCompletePackage	24	static

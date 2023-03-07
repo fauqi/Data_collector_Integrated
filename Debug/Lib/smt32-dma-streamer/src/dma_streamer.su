@@ -1,0 +1,10 @@
+../Lib/smt32-dma-streamer/src/dma_streamer.c:15:19:STRM_Init	24	static
+../Lib/smt32-dma-streamer/src/dma_streamer.c:34:6:STRM_CheckOverlap	24	static
+../Lib/smt32-dma-streamer/src/dma_streamer.c:47:10:STRM_Write	40	static
+../Lib/smt32-dma-streamer/src/dma_streamer.c:88:9:STRM_IsReadable	16	static
+../Lib/smt32-dma-streamer/src/dma_streamer.c:94:10:STRM_Read	40	static
+../Lib/smt32-dma-streamer/src/dma_streamer.c:111:6:STRM_Unread	16	static
+../Lib/smt32-dma-streamer/src/dma_streamer.c:125:10:STRM_Readline	40	static
+../Lib/smt32-dma-streamer/src/dma_streamer.c:160:19:STRM_ReadToBuffer	48	static
+../Lib/smt32-dma-streamer/src/dma_streamer.c:205:6:STRM_Reset	16	static
+../Lib/smt32-dma-streamer/src/dma_streamer.c:211:17:readBuffer	32	static

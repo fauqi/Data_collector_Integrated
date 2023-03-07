@@ -9,6 +9,9 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include Lib/smt32-dma-streamer/src/subdir.mk
+-include Lib/rs485-bus-communication/src/subdir.mk
+-include Lib/buffer-c/src/subdir.mk
 -include Drivers/STM32G0xx_HAL_Driver/Src/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk
