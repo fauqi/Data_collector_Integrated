@@ -1,4 +1,5 @@
-Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
+Core/Src/FlASH_PAGE_F1.o: ../Core/Src/FlASH_PAGE_F1.c \
+ ../Core/Inc/FLASH_PAGE_F1.h \
  ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal.h \
  ../Core/Inc/stm32g0xx_hal_conf.h \
  ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_rcc.h \
@@ -30,21 +31,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_tim.h \
  ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_tim_ex.h \
  ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_uart.h \
- ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_uart_ex.h \
- ../Core/Inc/CANbus.h \
- D:/Data\ Folder\ Fauqi/Data_collector_Integrated/Lib/rs485-bus-communication/src/inc/rs485-bus.h \
- D:/Data\ Folder\ Fauqi/Data_collector_Integrated/Lib/rs485-bus-communication/src/inc/rs485-bus/_defs.h \
- D:/Data\ Folder\ Fauqi/Data_collector_Integrated/Lib/rs485-bus-communication/src/inc/rs485-bus/_config.h \
- D:/Data\ Folder\ Fauqi/Data_collector_Integrated/Lib/rs485-bus-communication/src/inc/rs485-bus/slave.h \
- D:/Data\ Folder\ Fauqi/Data_collector_Integrated/Lib/rs485-bus-communication/src/inc/rs485-bus/_defs.h \
- D:/Data\ Folder\ Fauqi/Data_collector_Integrated/Lib/rs485-bus-communication/src/inc/rs485-bus/package.h \
- D:/Data\ Folder\ Fauqi/Data_collector_Integrated/Lib/rs485-bus-communication/src/inc/rs485-bus/event_handler.h \
- D:/Data\ Folder\ Fauqi/Data_collector_Integrated/Lib/smt32-dma-streamer/src/include/dma_streamer.h \
- D:/Data\ Folder\ Fauqi/Data_collector_Integrated/Lib/buffer-c/src/buffer.h \
- ../Core/Inc/report.h ../Core/Inc/mode.h ../Core/Inc/CANbus.h \
- ../Core/Inc/ws2812.h ../Core/Inc/main.h ../Core/Inc/ws2812.h \
- ../Core/Inc/FLASH_PAGE_F1.h
-../Core/Inc/main.h:
+ ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_uart_ex.h
+../Core/Inc/FLASH_PAGE_F1.h:
 ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal.h:
 ../Core/Inc/stm32g0xx_hal_conf.h:
 ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_rcc.h:
@@ -77,20 +65,3 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_tim_ex.h:
 ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_uart.h:
 ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_uart_ex.h:
-../Core/Inc/CANbus.h:
-D:/Data\ Folder\ Fauqi/Data_collector_Integrated/Lib/rs485-bus-communication/src/inc/rs485-bus.h:
-D:/Data\ Folder\ Fauqi/Data_collector_Integrated/Lib/rs485-bus-communication/src/inc/rs485-bus/_defs.h:
-D:/Data\ Folder\ Fauqi/Data_collector_Integrated/Lib/rs485-bus-communication/src/inc/rs485-bus/_config.h:
-D:/Data\ Folder\ Fauqi/Data_collector_Integrated/Lib/rs485-bus-communication/src/inc/rs485-bus/slave.h:
-D:/Data\ Folder\ Fauqi/Data_collector_Integrated/Lib/rs485-bus-communication/src/inc/rs485-bus/_defs.h:
-D:/Data\ Folder\ Fauqi/Data_collector_Integrated/Lib/rs485-bus-communication/src/inc/rs485-bus/package.h:
-D:/Data\ Folder\ Fauqi/Data_collector_Integrated/Lib/rs485-bus-communication/src/inc/rs485-bus/event_handler.h:
-D:/Data\ Folder\ Fauqi/Data_collector_Integrated/Lib/smt32-dma-streamer/src/include/dma_streamer.h:
-D:/Data\ Folder\ Fauqi/Data_collector_Integrated/Lib/buffer-c/src/buffer.h:
-../Core/Inc/report.h:
-../Core/Inc/mode.h:
-../Core/Inc/CANbus.h:
-../Core/Inc/ws2812.h:
-../Core/Inc/main.h:
-../Core/Inc/ws2812.h:
-../Core/Inc/FLASH_PAGE_F1.h:

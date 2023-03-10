@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ../Core/Src/main.c:159:5:main	8	static
 ../Core/Src/main.c:337:6:SystemClock_Config	96	static
 ../Core/Src/main.c:384:13:MX_FDCAN1_Init	8	static
@@ -15,3 +16,14 @@
 ../Core/Src/main.c:753:13:onEventLock	32	static
 ../Core/Src/main.c:764:13:onEventUnlock	32	static
 ../Core/Src/main.c:779:6:Error_Handler	8	static,ignoring_inline_asm
+=======
+../Core/Src/main.c:137:5:main	8	static
+../Core/Src/main.c:310:6:SystemClock_Config	96	static
+../Core/Src/main.c:357:13:MX_FDCAN1_Init	8	static
+../Core/Src/main.c:400:13:MX_FDCAN2_Init	8	static
+../Core/Src/main.c:443:13:MX_TIM1_Init	120	static
+../Core/Src/main.c:530:13:MX_USART1_UART_Init	8	static
+../Core/Src/main.c:576:13:MX_DMA_Init	16	static
+../Core/Src/main.c:597:13:MX_GPIO_Init	48	static
+../Core/Src/main.c:625:6:Error_Handler	8	static,ignoring_inline_asm
+>>>>>>> coba_backup
