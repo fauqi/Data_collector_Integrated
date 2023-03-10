@@ -34,6 +34,7 @@
 #include <report.h>
 #include "mode.h"
 #include"ws2812.h"
+#include"FLASH_PAGE_F1.h"
 //#include"FLASH_SECTOR_H7.h"
 //#include"backup.h"
 /* USER CODE END Includes */
@@ -60,6 +61,9 @@ FDCAN_FilterTypeDef sFilterConfig;
 FDCAN_FilterTypeDef sFilterConfig2;
 FDCAN_RxHeaderTypeDef RxHeader;
 FDCAN_TxHeaderTypeDef TxHeader;
+
+uint32_t data[]={0x11111111,0x22222222};
+uint32_t data2[]={0x00000000,0x00000000};
 
 struct {
  	unsigned int pc;
@@ -179,111 +183,119 @@ int main(void)
 
   slot1.datasentflag=0;
   slot2.datasentflag=1;
+  fault_led(&slot1);
+  fault_led(&slot2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+//	  switch(slot1.notif)
+//	  {
+//	  case led_standby:
+//		 fault_led(&slot1);
+////	 		  standby_led(&slot1);
+//		  break;
+//	  case led_swap:
+//		  swap_led(&slot1);
+//		  break;
+//	  case led_charging:
+//		   charging_led(&slot1);
+//		   break;
+//	  case led_fault:
+//		  fault_led(&slot1);
+//		  break;
+//	  case led_ready_pick:
+//		  ready_pick_led(&slot1);
+//		  break;
+//	  default:
+//		  standby_led(&slot1);
+//		  break;
+//	  }
+//
+//	  switch(slot2.notif)
+//	  {
+//	  case led_standby:
+//		 fault_led(&slot2);
+////	 		  standby_led(&slot2);
+//		  break;
+//	  case led_swap:
+//		  swap_led(&slot2);
+//		  break;
+//	  case led_charging:
+//		   charging_led(&slot2);
+//		   break;
+//	  case led_fault:
+//		  fault_led(&slot2);
+//		  break;
+//	  case led_ready_pick:
+//		  ready_pick_led(&slot2);
+//		  break;
+//	  default:
+//		  standby_led(&slot2);
+//		  break;
+//	  }
+//
+//	  switch(slot1.state)
+//	  {
+//	  case standby:
+//		  slot1.notif=led_standby;
+//		  standby_mode(&slot1);
+//		  break;
+//	  case charging:
+//		  if(slot1.SOC_batt<100&&slot1.charge_state==1)
+//		  slot1.notif=led_charging;
+//		  charging_mode(&slot1);
+//		  break;
+//	  case fault:
+//		  slot1.notif=led_fault;
+//		  fault_mode(&slot1);
+//		  break;
+//	  case swap:
+//		  slot1.notif=led_swap;
+//		  swap_mode(&slot1);
+//		  break;
+//	  default:
+//		  slot1.notif=standby;
+//		  slot1.state = standby;
+//		  break;
+//	  }
+//
+//	  switch(slot2.state)
+//	  {
+//	  case standby:
+//		  slot2.notif=led_standby;
+//		  standby_mode(&slot2);
+//		  break;
+//	  case charging:
+//		  if(slot2.SOC_batt<100&&slot2.charge_state==1)
+//		  slot2.notif=led_charging;
+//		  charging_mode(&slot2);
+//		  break;
+//	  case fault:
+//		  slot2.notif=led_fault;
+//		  fault_mode(&slot2);
+//		  break;
+//	  case swap:
+//		  slot2.notif=led_swap;
+//		  swap_mode(&slot2);
+//		  break;
+//	  default:
+//		  slot2.notif=standby;
+//		  slot2.state = standby;
+//		  break;
+//	  }
+	send_led();
+//	CAN_TX();
+//	Flash_Write_Data(0x0801F800, data, 2);
 
-	  	  switch(slot1.notif)
-	 	  {
-	 	  case led_standby:
-	 		 fault_led(&slot1);
-//	 		  standby_led(&slot1);
-	 		  break;
-	 	  case led_swap:
-	 		  swap_led(&slot1);
-	 		  break;
-	 	  case led_charging:
-	 		   charging_led(&slot1);
-	 		   break;
-	 	  case led_fault:
-	 		  fault_led(&slot1);
-	 		  break;
-	 	  case led_ready_pick:
-	 		  ready_pick_led(&slot1);
-	 		  break;
-	 	  default:
-	 		  standby_led(&slot1);
-	 		  break;
-	 	  }
-
-	 	  switch(slot2.notif)
-	 	  {
-	 	  case led_standby:
-	 		 fault_led(&slot2);
-//	 		  standby_led(&slot2);
-	 		  break;
-	 	  case led_swap:
-	 		  swap_led(&slot2);
-	 		  break;
-	 	  case led_charging:
-	 		   charging_led(&slot2);
-	 		   break;
-	 	  case led_fault:
-	 		  fault_led(&slot2);
-	 		  break;
-	 	  case led_ready_pick:
-	 		  ready_pick_led(&slot2);
-	 		  break;
-	 	  default:
-	 		  standby_led(&slot2);
-	 		  break;
-	 	  }
-
-	 	  switch(slot1.state)
-		  {
-		  case standby:
-			  slot1.notif=led_standby;
-			  standby_mode(&slot1);
-			  break;
-		  case charging:
-			  if(slot1.SOC_batt<100&&slot1.charge_state==1)
-			  slot1.notif=led_charging;
-			  charging_mode(&slot1);
-			  break;
-		  case fault:
-			  slot1.notif=led_fault;
-			  fault_mode(&slot1);
-			  break;
-		  case swap:
-			  slot1.notif=led_swap;
-			  swap_mode(&slot1);
-			  break;
-		  default:
-			  slot1.notif=standby;
-			  slot1.state = standby;
-			  break;
-		  }
-
-	  switch(slot2.state)
-		  {
-		  case standby:
-			  slot2.notif=led_standby;
-			  standby_mode(&slot2);
-			  break;
-		  case charging:
-			  if(slot2.SOC_batt<100&&slot2.charge_state==1)
-			  slot2.notif=led_charging;
-			  charging_mode(&slot2);
-			  break;
-		  case fault:
-			  slot2.notif=led_fault;
-			  fault_mode(&slot2);
-			  break;
-		  case swap:
-			  slot2.notif=led_swap;
-			  swap_mode(&slot2);
-			  break;
-		  default:
-			  slot2.notif=standby;
-			  slot2.state = standby;
-			  break;
-		  }
-	 send_led();
-CAN_TX();
-HAL_Delay(1000);
+	if(HAL_GetTick()-tick.led>2000)
+	{
+		HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_7);
+		tick.led=HAL_GetTick();
+	}
+//	HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -444,7 +456,7 @@ static void MX_TIM1_Init(void)
 
   /* USER CODE END TIM1_Init 1 */
   htim1.Instance = TIM1;
-  htim1.Init.Prescaler = 15;
+  htim1.Init.Prescaler = 0;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim1.Init.Period = 79;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -584,10 +596,21 @@ static void MX_DMA_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : PB7 */
+  GPIO_InitStruct.Pin = GPIO_PIN_7;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 }
 

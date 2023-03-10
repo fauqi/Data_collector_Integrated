@@ -7,5 +7,5 @@
 ../Core/Src/ws2812.c:160:6:ready_pick_led	32	static
 ../Core/Src/ws2812.c:175:6:swap_led	32	static
 ../Core/Src/ws2812.c:196:6:fault_led	32	static
-../Core/Src/ws2812.c:205:6:standby_led	32	static
-../Core/Src/ws2812.c:214:6:HAL_TIM_PWM_PulseFinishedCallback	16	static
+../Core/Src/ws2812.c:207:6:standby_led	32	static
+../Core/Src/ws2812.c:216:6:HAL_TIM_PWM_PulseFinishedCallback	16	static

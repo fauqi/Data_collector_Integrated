@@ -197,7 +197,9 @@ void fault_led(slot *Slot)
 {
 	  for(int i=0;i<=MAX_LED;i++)
 	  {
-		  Set_LED(Slot,i, 255, 0, 0);
+		  if(Slot==&slot1)
+		  Set_LED(Slot,i, 255, 255, 0);
+		  else Set_LED(Slot,i, 255, 0, 0);
 	  }
 
 		Set_Brightness(Slot,46);

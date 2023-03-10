@@ -1,4 +1,5 @@
 "./Core/Src/CANbus.o"
+"./Core/Src/FlASH_PAGE_F1.o"
 "./Core/Src/main.o"
 "./Core/Src/mode.o"
 "./Core/Src/report.o"
