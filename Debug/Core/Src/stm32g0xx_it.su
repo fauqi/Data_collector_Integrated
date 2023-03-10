@@ -5,8 +5,9 @@
 ../Core/Src/stm32g0xx_it.c:131:6:SysTick_Handler	8	static
 ../Core/Src/stm32g0xx_it.c:152:6:DMA1_Channel1_IRQHandler	8	static
 ../Core/Src/stm32g0xx_it.c:166:6:DMA1_Channel2_3_IRQHandler	8	static
-../Core/Src/stm32g0xx_it.c:181:6:TIM1_BRK_UP_TRG_COM_IRQHandler	8	static
-../Core/Src/stm32g0xx_it.c:195:6:TIM1_CC_IRQHandler	8	static
-../Core/Src/stm32g0xx_it.c:209:6:TIM16_FDCAN_IT0_IRQHandler	8	static
-../Core/Src/stm32g0xx_it.c:224:6:TIM17_FDCAN_IT1_IRQHandler	8	static
-../Core/Src/stm32g0xx_it.c:239:6:USART1_IRQHandler	8	static
+../Core/Src/stm32g0xx_it.c:180:6:DMA1_Ch4_7_DMA2_Ch1_5_DMAMUX1_OVR_IRQHandler	8	static
+../Core/Src/stm32g0xx_it.c:194:6:TIM1_BRK_UP_TRG_COM_IRQHandler	8	static
+../Core/Src/stm32g0xx_it.c:208:6:TIM1_CC_IRQHandler	8	static
+../Core/Src/stm32g0xx_it.c:222:6:TIM16_FDCAN_IT0_IRQHandler	8	static
+../Core/Src/stm32g0xx_it.c:237:6:TIM17_FDCAN_IT1_IRQHandler	8	static
+../Core/Src/stm32g0xx_it.c:252:6:USART1_IRQHandler	8	static

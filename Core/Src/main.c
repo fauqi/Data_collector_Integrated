@@ -85,6 +85,7 @@ struct {
   char cVcharger[16];
   char cAcharger[16];
 
+  uint8_t Tx_Data[8]="a";
   FDCAN_RxHeaderTypeDef RxHeader2;
   FDCAN_TxHeaderTypeDef TxHeader2;
 /* USER CODE END PD */
@@ -107,6 +108,12 @@ DMA_HandleTypeDef hdma_usart1_rx;
 
 /* USER CODE BEGIN PV */
 
+RS485_Bus_SlaveHandler rs485_hslave;
+
+STRM_handlerTypeDef hdma;
+static uint8_t UartBufferRx[BUF_UART_RX_SZ];
+static uint8_t eventRespSuccess = 0;
+static uint8_t eventRespError = 1;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -118,7 +125,26 @@ static void MX_FDCAN2_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
+static void MX_RS485_Slave_Init(void);
 
+static int UartRead(uint8_t *buffer, uint16_t bufferLen);
+static int UartWrite(uint8_t *buffer, uint16_t bufferLen);
+
+static void onEventReqReport(RS484_BUS_Id_t,
+                             uint8_t *buffer, uint16_t bufferLen,
+                             RS485_Bus_EventResponse_t *resp);
+static void onEventStartCharging(RS484_BUS_Id_t,
+                                 uint8_t *buffer, uint16_t bufferLen,
+                                 RS485_Bus_EventResponse_t *resp);
+static void onEventStopCharging(RS484_BUS_Id_t,
+                                uint8_t *buffer, uint16_t bufferLen,
+                                RS485_Bus_EventResponse_t *resp);
+static void onEventLock(RS484_BUS_Id_t,
+                                uint8_t *buffer, uint16_t bufferLen,
+                                RS485_Bus_EventResponse_t *resp);
+static void onEventUnlock(RS484_BUS_Id_t,
+                                uint8_t *buffer, uint16_t bufferLen,
+                                RS485_Bus_EventResponse_t *resp);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -160,6 +186,7 @@ int main(void)
   MX_TIM1_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
+  MX_RS485_Slave_Init();
   CAN_config();
   slot1.notif=led_standby;
   slot2.notif=led_standby;
@@ -179,111 +206,123 @@ int main(void)
 
   slot1.datasentflag=0;
   slot2.datasentflag=1;
+  HAL_UART_Init(&huart1);
+  HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,GPIO_PIN_RESET);
+  HAL_UART_Receive_DMA(&huart1, UartBufferRx,BUF_UART_RX_SZ);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-
-	  	  switch(slot1.notif)
-	 	  {
-	 	  case led_standby:
-	 		 fault_led(&slot1);
+	  	  RS485_Bus_Slave_Process(&rs485_hslave);
+//	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_SET);
+//	  HAL_UART_Transmit(&huart1, Tx_Data, 8, 200);
+//	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_RESET);
+//	  HAL_Delay(2000);
+//	  	  switch(slot1.notif)
+//	 	  {
+//	 	  case led_standby:
+//	 		 fault_led(&slot1);
+////	 		  standby_led(&slot1);
+//	 		  break;
+//	 	  case led_swap:
+//	 		  swap_led(&slot1);
+//	 		  break;
+//	 	  case led_charging:
+//	 		   charging_led(&slot1);
+//	 		   break;
+//	 	  case led_fault:
+//	 		  fault_led(&slot1);
+//	 		  break;
+//	 	  case led_ready_pick:
+//	 		  ready_pick_led(&slot1);
+//	 		  break;
+//	 	  default:
 //	 		  standby_led(&slot1);
-	 		  break;
-	 	  case led_swap:
-	 		  swap_led(&slot1);
-	 		  break;
-	 	  case led_charging:
-	 		   charging_led(&slot1);
-	 		   break;
-	 	  case led_fault:
-	 		  fault_led(&slot1);
-	 		  break;
-	 	  case led_ready_pick:
-	 		  ready_pick_led(&slot1);
-	 		  break;
-	 	  default:
-	 		  standby_led(&slot1);
-	 		  break;
-	 	  }
-
-	 	  switch(slot2.notif)
-	 	  {
-	 	  case led_standby:
-	 		 fault_led(&slot2);
+//	 		  break;
+//	 	  }
+//
+//	 	  switch(slot2.notif)
+//	 	  {
+//	 	  case led_standby:
+//	 		 fault_led(&slot2);
+////	 		  standby_led(&slot2);
+//	 		  break;
+//	 	  case led_swap:
+//	 		  swap_led(&slot2);
+//	 		  break;
+//	 	  case led_charging:
+//	 		   charging_led(&slot2);
+//	 		   break;
+//	 	  case led_fault:
+//	 		  fault_led(&slot2);
+//	 		  break;
+//	 	  case led_ready_pick:
+//	 		  ready_pick_led(&slot2);
+//	 		  break;
+//	 	  default:
 //	 		  standby_led(&slot2);
-	 		  break;
-	 	  case led_swap:
-	 		  swap_led(&slot2);
-	 		  break;
-	 	  case led_charging:
-	 		   charging_led(&slot2);
-	 		   break;
-	 	  case led_fault:
-	 		  fault_led(&slot2);
-	 		  break;
-	 	  case led_ready_pick:
-	 		  ready_pick_led(&slot2);
-	 		  break;
-	 	  default:
-	 		  standby_led(&slot2);
-	 		  break;
-	 	  }
-
-	 	  switch(slot1.state)
-		  {
-		  case standby:
-			  slot1.notif=led_standby;
-			  standby_mode(&slot1);
-			  break;
-		  case charging:
-			  if(slot1.SOC_batt<100&&slot1.charge_state==1)
-			  slot1.notif=led_charging;
-			  charging_mode(&slot1);
-			  break;
-		  case fault:
-			  slot1.notif=led_fault;
-			  fault_mode(&slot1);
-			  break;
-		  case swap:
-			  slot1.notif=led_swap;
-			  swap_mode(&slot1);
-			  break;
-		  default:
-			  slot1.notif=standby;
-			  slot1.state = standby;
-			  break;
-		  }
-
-	  switch(slot2.state)
-		  {
-		  case standby:
-			  slot2.notif=led_standby;
-			  standby_mode(&slot2);
-			  break;
-		  case charging:
-			  if(slot2.SOC_batt<100&&slot2.charge_state==1)
-			  slot2.notif=led_charging;
-			  charging_mode(&slot2);
-			  break;
-		  case fault:
-			  slot2.notif=led_fault;
-			  fault_mode(&slot2);
-			  break;
-		  case swap:
-			  slot2.notif=led_swap;
-			  swap_mode(&slot2);
-			  break;
-		  default:
-			  slot2.notif=standby;
-			  slot2.state = standby;
-			  break;
-		  }
-	 send_led();
-CAN_TX();
-HAL_Delay(1000);
+//	 		  break;
+//	 	  }
+//
+//	 	  switch(slot1.state)
+//		  {
+//		  case standby:
+//			  slot1.notif=led_standby;
+//			  standby_mode(&slot1);
+//			  break;
+//		  case charging:
+//			  if(slot1.SOC_batt<100&&slot1.charge_state==1)
+//			  slot1.notif=led_charging;
+//			  charging_mode(&slot1);
+//			  break;
+//		  case fault:
+//			  slot1.notif=led_fault;
+//			  fault_mode(&slot1);
+//			  break;
+//		  case swap:
+//			  slot1.notif=led_swap;
+//			  swap_mode(&slot1);
+//			  break;
+//		  default:
+//			  slot1.notif=standby;
+//			  slot1.state = standby;
+//			  break;
+//		  }
+//
+//	  switch(slot2.state)
+//		  {
+//		  case standby:
+//			  slot2.notif=led_standby;
+//			  standby_mode(&slot2);
+//			  break;
+//		  case charging:
+//			  if(slot2.SOC_batt<100&&slot2.charge_state==1)
+//			  slot2.notif=led_charging;
+//			  charging_mode(&slot2);
+//			  break;
+//		  case fault:
+//			  slot2.notif=led_fault;
+//			  fault_mode(&slot2);
+//			  break;
+//		  case swap:
+//			  slot2.notif=led_swap;
+//			  swap_mode(&slot2);
+//			  break;
+//		  default:
+//			  slot2.notif=standby;
+//			  slot2.state = standby;
+//			  break;
+//		  }
+//	 send_led();
+//CAN_TX();
+//if(HAL_GetTick()-tick.led>=2000)
+//{
+//	HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_7);
+//	tick.led=HAL_GetTick();
+//}
+//HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -565,6 +604,7 @@ static void MX_DMA_Init(void)
 {
 
   /* DMA controller clock enable */
+  __HAL_RCC_DMA2_CLK_ENABLE();
   __HAL_RCC_DMA1_CLK_ENABLE();
 
   /* DMA interrupt init */
@@ -574,6 +614,9 @@ static void MX_DMA_Init(void)
   /* DMA1_Channel2_3_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Channel2_3_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel2_3_IRQn);
+  /* DMA1_Ch4_7_DMA2_Ch1_5_DMAMUX1_OVR_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Ch4_7_DMA2_Ch1_5_DMAMUX1_OVR_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Ch4_7_DMA2_Ch1_5_DMAMUX1_OVR_IRQn);
 
 }
 
@@ -584,15 +627,149 @@ static void MX_DMA_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(RS485_Tx_EN_GPIO_Port, RS485_Tx_EN_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : RS485_Tx_EN_Pin */
+  GPIO_InitStruct.Pin = RS485_Tx_EN_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(RS485_Tx_EN_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PB7 */
+  GPIO_InitStruct.Pin = GPIO_PIN_7;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 }
 
 /* USER CODE BEGIN 4 */
+static void MX_RS485_Slave_Init(void)
+{
+  HAL_UART_Receive_DMA(&huart1, UartBufferRx,BUF_UART_RX_SZ);
+  rs485_hslave.read = UartRead;
+  rs485_hslave.write = UartWrite;
+  RS485_Bus_Slave_Init(&rs485_hslave);
+  RS485_Bus_Slave_AddId(&rs485_hslave, RS485_SLAVE_ID_1);
+  RS485_Bus_Slave_AddId(&rs485_hslave, RS485_SLAVE_ID_2);
 
+  RS485_Bus_Slave_On(&rs485_hslave, EVENT_REQ_REPORT, onEventReqReport);
+  RS485_Bus_Slave_On(&rs485_hslave, EVENT_START_CHARGING, onEventStartCharging);
+  RS485_Bus_Slave_On(&rs485_hslave, EVENT_STOP_CHARGING, onEventStopCharging);
+  RS485_Bus_Slave_On(&rs485_hslave, EVENT_LOCK, onEventLock);
+  RS485_Bus_Slave_On(&rs485_hslave, EVENT_UNLOCK, onEventUnlock);
+
+  hdma.huart = &huart1;
+  STRM_Init(&hdma, 0, 0, &UartBufferRx[0],BUF_UART_RX_SZ);
+
+}
+
+static int UartRead(uint8_t *buffer, uint16_t bufferLen)
+{
+
+ return (int) STRM_Read(&hdma, buffer, bufferLen, 10);
+}
+
+static int UartWrite(uint8_t *buffer, uint16_t bufferLen)
+{
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_SET);
+  HAL_UART_Transmit(&huart1, buffer, bufferLen, 100);
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_RESET);
+  return bufferLen;
+}
+
+
+static void onEventReqReport(RS484_BUS_Id_t id, uint8_t *buffer, uint16_t bufferLen, RS485_Bus_EventResponse_t *resp)
+{
+  static int soc = 0;
+  soc++;
+
+  Report_ResetFrame(&tmpReportFrame);
+  if(id==RS485_SLAVE_ID_1)
+  {
+  tmpReportFrame.charger.status = slot1.batt_charge_state;
+  tmpReportFrame.bms.SOC = slot1.SOC_batt;
+  tmpReportFrame.bms.voltage =slot1.Vbatt;
+  tmpReportFrame.bms.current=slot1.Abatt;
+  tmpReportFrame.bms.SOH=slot1.SOH_batt;
+  tmpReportFrame.bms.temperature=slot1.temp_batt;
+  tmpReportFrame.bms.id=slot1.batt_id;
+
+  slot1.CAN_error_state=0;
+  }
+  else if(id==RS485_SLAVE_ID_2)
+  {
+  tmpReportFrame.charger.status = slot2.batt_charge_state;
+  tmpReportFrame.bms.SOC = slot2.SOC_batt;
+  tmpReportFrame.bms.voltage =slot2.Vbatt;
+  tmpReportFrame.bms.current=slot2.Abatt;
+  tmpReportFrame.bms.SOH=slot2.SOH_batt;
+  tmpReportFrame.bms.temperature=slot2.temp_batt;
+  tmpReportFrame.bms.id=slot2.batt_id;
+  slot2.CAN_error_state=0;
+  }
+
+  resp->data = (uint8_t*) &tmpReportFrame;
+  resp->dataLen = sizeof(ReportFrame_t);
+  report_finish=1;
+
+  return;
+}
+
+static void onEventStartCharging(RS484_BUS_Id_t id, uint8_t *buffer, uint16_t bufferLen, RS485_Bus_EventResponse_t *resp)
+{
+  // TODO start charing
+
+	if(id==RS485_SLAVE_ID_1) 	  slot1.charge_command=1;
+	else if(id==RS485_SLAVE_ID_2) slot2.charge_command=1;
+	resp->data = (uint8_t*) &eventRespSuccess;
+	resp->dataLen = sizeof(eventRespSuccess);
+	return;
+}
+
+static void onEventStopCharging(RS484_BUS_Id_t id, uint8_t *buffer, uint16_t bufferLen, RS485_Bus_EventResponse_t *resp)
+{
+  // TODO stop charing
+	if(id==RS485_SLAVE_ID_1)slot1.stop_charge_command=1;
+	else if(id==RS485_SLAVE_ID_2)slot2.stop_charge_command=1;
+	resp->data = (uint8_t*) &eventRespSuccess;
+	resp->dataLen = sizeof(eventRespSuccess);
+	return;
+}
+
+static void onEventLock(RS484_BUS_Id_t id, uint8_t *buffer, uint16_t bufferLen, RS485_Bus_EventResponse_t *resp)
+{
+  // TODO lock aktuator
+	if(id==RS485_SLAVE_ID_1) slot1.lock_command=1;
+	if(id==RS485_SLAVE_ID_2) slot2.lock_command=1;
+	resp->data = (uint8_t*) &eventRespSuccess;
+	resp->dataLen = sizeof(eventRespSuccess);
+	return;
+
+}
+
+static void onEventUnlock(RS484_BUS_Id_t id, uint8_t *buffer, uint16_t bufferLen, RS485_Bus_EventResponse_t *resp)
+{
+  // TODO unlock aktuator
+	if(id==RS485_SLAVE_ID_1)slot1.unlock_command=1;
+	else if(id==RS485_SLAVE_ID_2)slot2.unlock_command=1;
+	resp->data = (uint8_t*) &eventRespSuccess;
+	resp->dataLen = sizeof(eventRespSuccess);
+	return;
+}
 /* USER CODE END 4 */
 
 /**
