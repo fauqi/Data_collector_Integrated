@@ -71,7 +71,6 @@ struct {
  	unsigned int RS485;
  	unsigned int backup;
  } tick;
- uint32_t Rx_Data[10];
 
   slot slot1,slot2;
   bool report_finish=0;
@@ -89,7 +88,6 @@ struct {
   char cVcharger[16];
   char cAcharger[16];
 
-  uint8_t Tx_Data[8]="a";
   FDCAN_RxHeaderTypeDef RxHeader2;
   FDCAN_TxHeaderTypeDef TxHeader2;
 /* USER CODE END PD */
@@ -210,236 +208,121 @@ int main(void)
 
   slot1.datasentflag=0;
   slot2.datasentflag=1;
-<<<<<<< HEAD
-  HAL_UART_Init(&huart1);
-  HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,GPIO_PIN_RESET);
-  HAL_UART_Receive_DMA(&huart1, UartBufferRx,BUF_UART_RX_SZ);
-=======
+
   fault_led(&slot1);
   fault_led(&slot2);
->>>>>>> coba_backup
+
+  HAL_GPIO_WritePin(TX_En_GPIO_Port, TX_En_Pin, GPIO_PIN_RESET);
+  HAL_UART_Receive_DMA(&huart1, UartBufferRx,BUF_UART_RX_SZ);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-<<<<<<< HEAD
-	  	  RS485_Bus_Slave_Process(&rs485_hslave);
-//	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_SET);
-//	  HAL_UART_Transmit(&huart1, Tx_Data, 8, 200);
-//	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_RESET);
-//	  HAL_Delay(2000);
-//	  	  switch(slot1.notif)
-//	 	  {
-//	 	  case led_standby:
-//	 		 fault_led(&slot1);
-////	 		  standby_led(&slot1);
-//	 		  break;
-//	 	  case led_swap:
-//	 		  swap_led(&slot1);
-//	 		  break;
-//	 	  case led_charging:
-//	 		   charging_led(&slot1);
-//	 		   break;
-//	 	  case led_fault:
-//	 		  fault_led(&slot1);
-//	 		  break;
-//	 	  case led_ready_pick:
-//	 		  ready_pick_led(&slot1);
-//	 		  break;
-//	 	  default:
+	  RS485_Bus_Slave_Process(&rs485_hslave);
+	  	  switch(slot1.notif)
+	 	  {
+	 	  case led_standby:
+	 		 fault_led(&slot1);
 //	 		  standby_led(&slot1);
-//	 		  break;
-//	 	  }
-//
-//	 	  switch(slot2.notif)
-//	 	  {
-//	 	  case led_standby:
-//	 		 fault_led(&slot2);
-////	 		  standby_led(&slot2);
-//	 		  break;
-//	 	  case led_swap:
-//	 		  swap_led(&slot2);
-//	 		  break;
-//	 	  case led_charging:
-//	 		   charging_led(&slot2);
-//	 		   break;
-//	 	  case led_fault:
-//	 		  fault_led(&slot2);
-//	 		  break;
-//	 	  case led_ready_pick:
-//	 		  ready_pick_led(&slot2);
-//	 		  break;
-//	 	  default:
-//	 		  standby_led(&slot2);
-//	 		  break;
-//	 	  }
-//
-//	 	  switch(slot1.state)
-//		  {
-//		  case standby:
-//			  slot1.notif=led_standby;
-//			  standby_mode(&slot1);
-//			  break;
-//		  case charging:
-//			  if(slot1.SOC_batt<100&&slot1.charge_state==1)
-//			  slot1.notif=led_charging;
-//			  charging_mode(&slot1);
-//			  break;
-//		  case fault:
-//			  slot1.notif=led_fault;
-//			  fault_mode(&slot1);
-//			  break;
-//		  case swap:
-//			  slot1.notif=led_swap;
-//			  swap_mode(&slot1);
-//			  break;
-//		  default:
-//			  slot1.notif=standby;
-//			  slot1.state = standby;
-//			  break;
-//		  }
-//
-//	  switch(slot2.state)
-//		  {
-//		  case standby:
-//			  slot2.notif=led_standby;
-//			  standby_mode(&slot2);
-//			  break;
-//		  case charging:
-//			  if(slot2.SOC_batt<100&&slot2.charge_state==1)
-//			  slot2.notif=led_charging;
-//			  charging_mode(&slot2);
-//			  break;
-//		  case fault:
-//			  slot2.notif=led_fault;
-//			  fault_mode(&slot2);
-//			  break;
-//		  case swap:
-//			  slot2.notif=led_swap;
-//			  swap_mode(&slot2);
-//			  break;
-//		  default:
-//			  slot2.notif=standby;
-//			  slot2.state = standby;
-//			  break;
-//		  }
-//	 send_led();
-//CAN_TX();
-//if(HAL_GetTick()-tick.led>=2000)
-//{
-//	HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_7);
-//	tick.led=HAL_GetTick();
-//}
-//HAL_Delay(1000);
-=======
-//	  switch(slot1.notif)
-//	  {
-//	  case led_standby:
-//		 fault_led(&slot1);
-////	 		  standby_led(&slot1);
-//		  break;
-//	  case led_swap:
-//		  swap_led(&slot1);
-//		  break;
-//	  case led_charging:
-//		   charging_led(&slot1);
-//		   break;
-//	  case led_fault:
-//		  fault_led(&slot1);
-//		  break;
-//	  case led_ready_pick:
-//		  ready_pick_led(&slot1);
-//		  break;
-//	  default:
-//		  standby_led(&slot1);
-//		  break;
-//	  }
-//
-//	  switch(slot2.notif)
-//	  {
-//	  case led_standby:
-//		 fault_led(&slot2);
-////	 		  standby_led(&slot2);
-//		  break;
-//	  case led_swap:
-//		  swap_led(&slot2);
-//		  break;
-//	  case led_charging:
-//		   charging_led(&slot2);
-//		   break;
-//	  case led_fault:
-//		  fault_led(&slot2);
-//		  break;
-//	  case led_ready_pick:
-//		  ready_pick_led(&slot2);
-//		  break;
-//	  default:
-//		  standby_led(&slot2);
-//		  break;
-//	  }
-//
-//	  switch(slot1.state)
-//	  {
-//	  case standby:
-//		  slot1.notif=led_standby;
-//		  standby_mode(&slot1);
-//		  break;
-//	  case charging:
-//		  if(slot1.SOC_batt<100&&slot1.charge_state==1)
-//		  slot1.notif=led_charging;
-//		  charging_mode(&slot1);
-//		  break;
-//	  case fault:
-//		  slot1.notif=led_fault;
-//		  fault_mode(&slot1);
-//		  break;
-//	  case swap:
-//		  slot1.notif=led_swap;
-//		  swap_mode(&slot1);
-//		  break;
-//	  default:
-//		  slot1.notif=standby;
-//		  slot1.state = standby;
-//		  break;
-//	  }
-//
-//	  switch(slot2.state)
-//	  {
-//	  case standby:
-//		  slot2.notif=led_standby;
-//		  standby_mode(&slot2);
-//		  break;
-//	  case charging:
-//		  if(slot2.SOC_batt<100&&slot2.charge_state==1)
-//		  slot2.notif=led_charging;
-//		  charging_mode(&slot2);
-//		  break;
-//	  case fault:
-//		  slot2.notif=led_fault;
-//		  fault_mode(&slot2);
-//		  break;
-//	  case swap:
-//		  slot2.notif=led_swap;
-//		  swap_mode(&slot2);
-//		  break;
-//	  default:
-//		  slot2.notif=standby;
-//		  slot2.state = standby;
-//		  break;
-//	  }
-	send_led();
-//	CAN_TX();
-//	Flash_Write_Data(0x0801F800, data, 2);
+	 		  break;
+	 	  case led_swap:
+	 		  swap_led(&slot1);
+	 		  break;
+	 	  case led_charging:
+	 		   charging_led(&slot1);
+	 		   break;
+	 	  case led_fault:
+	 		  fault_led(&slot1);
+	 		  break;
+	 	  case led_ready_pick:
+	 		  ready_pick_led(&slot1);
+	 		  break;
+	 	  default:
+	 		  standby_led(&slot1);
+	 		  break;
+	 	  }
 
-	if(HAL_GetTick()-tick.led>2000)
-	{
-		HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_7);
-		tick.led=HAL_GetTick();
-	}
-//	HAL_Delay(1000);
->>>>>>> coba_backup
+	 	  switch(slot2.notif)
+	 	  {
+	 	  case led_standby:
+	 		 fault_led(&slot2);
+//	 		  standby_led(&slot2);
+	 		  break;
+	 	  case led_swap:
+	 		  swap_led(&slot2);
+	 		  break;
+	 	  case led_charging:
+	 		   charging_led(&slot2);
+	 		   break;
+	 	  case led_fault:
+	 		  fault_led(&slot2);
+	 		  break;
+	 	  case led_ready_pick:
+	 		  ready_pick_led(&slot2);
+	 		  break;
+	 	  default:
+	 		  standby_led(&slot2);
+	 		  break;
+	 	  }
+
+	 	  switch(slot1.state)
+		  {
+		  case standby:
+			  slot1.notif=led_standby;
+			  standby_mode(&slot1);
+			  break;
+		  case charging:
+			  if(slot1.SOC_batt<100&&slot1.charge_state==1)
+			  slot1.notif=led_charging;
+			  charging_mode(&slot1);
+			  break;
+		  case fault:
+			  slot1.notif=led_fault;
+			  fault_mode(&slot1);
+			  break;
+		  case swap:
+			  slot1.notif=led_swap;
+			  swap_mode(&slot1);
+			  break;
+		  default:
+			  slot1.notif=standby;
+			  slot1.state = standby;
+			  break;
+		  }
+
+	  switch(slot2.state)
+		  {
+		  case standby:
+			  slot2.notif=led_standby;
+			  standby_mode(&slot2);
+			  break;
+		  case charging:
+			  if(slot2.SOC_batt<100&&slot2.charge_state==1)
+			  slot2.notif=led_charging;
+			  charging_mode(&slot2);
+			  break;
+		  case fault:
+			  slot2.notif=led_fault;
+			  fault_mode(&slot2);
+			  break;
+		  case swap:
+			  slot2.notif=led_swap;
+			  swap_mode(&slot2);
+			  break;
+		  default:
+			  slot2.notif=standby;
+			  slot2.state = standby;
+			  break;
+		  }
+	 send_led();
+	CAN_TX();
+if(HAL_GetTick()-tick.led>=2000)
+{
+	HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_7);
+	tick.led=HAL_GetTick();
+}
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -721,7 +604,6 @@ static void MX_DMA_Init(void)
 {
 
   /* DMA controller clock enable */
-  __HAL_RCC_DMA2_CLK_ENABLE();
   __HAL_RCC_DMA1_CLK_ENABLE();
 
   /* DMA interrupt init */
@@ -731,9 +613,6 @@ static void MX_DMA_Init(void)
   /* DMA1_Channel2_3_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Channel2_3_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel2_3_IRQn);
-  /* DMA1_Ch4_7_DMA2_Ch1_5_DMAMUX1_OVR_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Ch4_7_DMA2_Ch1_5_DMAMUX1_OVR_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Ch4_7_DMA2_Ch1_5_DMAMUX1_OVR_IRQn);
 
 }
 
@@ -752,27 +631,17 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOC_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(RS485_Tx_EN_GPIO_Port, RS485_Tx_EN_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(TX_En_GPIO_Port, TX_En_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : RS485_Tx_EN_Pin */
-  GPIO_InitStruct.Pin = RS485_Tx_EN_Pin;
+  /*Configure GPIO pin : TX_En_Pin */
+  GPIO_InitStruct.Pin = TX_En_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(RS485_Tx_EN_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : PB7 */
-  GPIO_InitStruct.Pin = GPIO_PIN_7;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET);
+  HAL_GPIO_Init(TX_En_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PB7 */
   GPIO_InitStruct.Pin = GPIO_PIN_7;
