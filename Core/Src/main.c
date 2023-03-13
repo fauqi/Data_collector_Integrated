@@ -214,12 +214,16 @@ int main(void)
 
   HAL_GPIO_WritePin(TX_En_GPIO_Port, TX_En_Pin, GPIO_PIN_RESET);
   HAL_UART_Receive_DMA(&huart1, UartBufferRx,BUF_UART_RX_SZ);
+
+
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+
 	  RS485_Bus_Slave_Process(&rs485_hslave);
 	  	  switch(slot1.notif)
 	 	  {
@@ -321,6 +325,10 @@ int main(void)
 if(HAL_GetTick()-tick.led>=2000)
 {
 	HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_7);
+	HAL_GPIO_TogglePin(TRIG1_AKTUATOR1_GPIO_Port, TRIG1_AKTUATOR1_Pin);
+	HAL_GPIO_TogglePin(TRIG2_AKTUATOR1_GPIO_Port, TRIG2_AKTUATOR1_Pin);
+	HAL_GPIO_TogglePin(TRIG1_AKTUATOR2_GPIO_Port, TRIG1_AKTUATOR2_Pin);
+	HAL_GPIO_TogglePin(TRIG2_AKTUATOR2_GPIO_Port, TRIG2_AKTUATOR2_Pin);
 	tick.led=HAL_GetTick();
 }
     /* USER CODE END WHILE */
@@ -626,15 +634,25 @@ static void MX_GPIO_Init(void)
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOC_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, TRIG2_AKTUATOR2_Pin|TRIG1_AKTUATOR2_Pin|TRIG2_AKTUATOR1_Pin|TRIG1_AKTUATOR1_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(TX_En_GPIO_Port, TX_En_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET);
+
+  /*Configure GPIO pins : TRIG2_AKTUATOR2_Pin TRIG1_AKTUATOR2_Pin TRIG2_AKTUATOR1_Pin TRIG1_AKTUATOR1_Pin */
+  GPIO_InitStruct.Pin = TRIG2_AKTUATOR2_Pin|TRIG1_AKTUATOR2_Pin|TRIG2_AKTUATOR1_Pin|TRIG1_AKTUATOR1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pin : TX_En_Pin */
   GPIO_InitStruct.Pin = TX_En_Pin;

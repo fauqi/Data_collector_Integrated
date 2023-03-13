@@ -59,6 +59,14 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define TRIG2_AKTUATOR2_Pin GPIO_PIN_2
+#define TRIG2_AKTUATOR2_GPIO_Port GPIOA
+#define TRIG1_AKTUATOR2_Pin GPIO_PIN_3
+#define TRIG1_AKTUATOR2_GPIO_Port GPIOA
+#define TRIG2_AKTUATOR1_Pin GPIO_PIN_4
+#define TRIG2_AKTUATOR1_GPIO_Port GPIOA
+#define TRIG1_AKTUATOR1_Pin GPIO_PIN_5
+#define TRIG1_AKTUATOR1_GPIO_Port GPIOA
 #define TX_En_Pin GPIO_PIN_6
 #define TX_En_GPIO_Port GPIOC
 
