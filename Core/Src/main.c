@@ -329,6 +329,9 @@ if(HAL_GetTick()-tick.led>=2000)
 	HAL_GPIO_TogglePin(TRIG2_AKTUATOR1_GPIO_Port, TRIG2_AKTUATOR1_Pin);
 	HAL_GPIO_TogglePin(TRIG1_AKTUATOR2_GPIO_Port, TRIG1_AKTUATOR2_Pin);
 	HAL_GPIO_TogglePin(TRIG2_AKTUATOR2_GPIO_Port, TRIG2_AKTUATOR2_Pin);
+	HAL_GPIO_TogglePin(GNDBMSWAKEUP2_GPIO_Port, GNDBMSWAKEUP2_Pin);
+	HAL_GPIO_TogglePin(GNDBMSWAKEUP1_GPIO_Port, GNDBMSWAKEUP1_Pin);
+
 	tick.led=HAL_GetTick();
 }
     /* USER CODE END WHILE */
@@ -639,20 +642,30 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOC_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, TRIG2_AKTUATOR2_Pin|TRIG1_AKTUATOR2_Pin|TRIG2_AKTUATOR1_Pin|TRIG1_AKTUATOR1_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, TRIG2_AKTUATOR2_Pin|TRIG1_AKTUATOR2_Pin|TRIG2_AKTUATOR1_Pin|TRIG1_AKTUATOR1_Pin
+                          |GNDBMSWAKEUP2_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, GNDBMSWAKEUP1_Pin|GPIO_PIN_7, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(TX_En_GPIO_Port, TX_En_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET);
-
-  /*Configure GPIO pins : TRIG2_AKTUATOR2_Pin TRIG1_AKTUATOR2_Pin TRIG2_AKTUATOR1_Pin TRIG1_AKTUATOR1_Pin */
-  GPIO_InitStruct.Pin = TRIG2_AKTUATOR2_Pin|TRIG1_AKTUATOR2_Pin|TRIG2_AKTUATOR1_Pin|TRIG1_AKTUATOR1_Pin;
+  /*Configure GPIO pins : TRIG2_AKTUATOR2_Pin TRIG1_AKTUATOR2_Pin TRIG2_AKTUATOR1_Pin TRIG1_AKTUATOR1_Pin
+                           GNDBMSWAKEUP2_Pin */
+  GPIO_InitStruct.Pin = TRIG2_AKTUATOR2_Pin|TRIG1_AKTUATOR2_Pin|TRIG2_AKTUATOR1_Pin|TRIG1_AKTUATOR1_Pin
+                          |GNDBMSWAKEUP2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : GNDBMSWAKEUP1_Pin PB7 */
+  GPIO_InitStruct.Pin = GNDBMSWAKEUP1_Pin|GPIO_PIN_7;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pin : TX_En_Pin */
   GPIO_InitStruct.Pin = TX_En_Pin;
@@ -660,13 +673,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(TX_En_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : PB7 */
-  GPIO_InitStruct.Pin = GPIO_PIN_7;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 }
 
