@@ -331,6 +331,7 @@ if(HAL_GetTick()-tick.led>=2000)
 	HAL_GPIO_TogglePin(TRIG2_AKTUATOR2_GPIO_Port, TRIG2_AKTUATOR2_Pin);
 	HAL_GPIO_TogglePin(GNDBMSWAKEUP2_GPIO_Port, GNDBMSWAKEUP2_Pin);
 	HAL_GPIO_TogglePin(GNDBMSWAKEUP1_GPIO_Port, GNDBMSWAKEUP1_Pin);
+	HAL_GPIO_TogglePin(TRIG_ALARM_GPIO_Port, TRIG_ALARM_Pin);
 
 	tick.led=HAL_GetTick();
 }
@@ -643,7 +644,7 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, TRIG2_AKTUATOR2_Pin|TRIG1_AKTUATOR2_Pin|TRIG2_AKTUATOR1_Pin|TRIG1_AKTUATOR1_Pin
-                          |GNDBMSWAKEUP2_Pin, GPIO_PIN_RESET);
+                          |TRIG_ALARM_Pin|GNDBMSWAKEUP2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, GNDBMSWAKEUP1_Pin|GPIO_PIN_7, GPIO_PIN_RESET);
@@ -652,9 +653,9 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(TX_En_GPIO_Port, TX_En_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : TRIG2_AKTUATOR2_Pin TRIG1_AKTUATOR2_Pin TRIG2_AKTUATOR1_Pin TRIG1_AKTUATOR1_Pin
-                           GNDBMSWAKEUP2_Pin */
+                           TRIG_ALARM_Pin GNDBMSWAKEUP2_Pin */
   GPIO_InitStruct.Pin = TRIG2_AKTUATOR2_Pin|TRIG1_AKTUATOR2_Pin|TRIG2_AKTUATOR1_Pin|TRIG1_AKTUATOR1_Pin
-                          |GNDBMSWAKEUP2_Pin;
+                          |TRIG_ALARM_Pin|GNDBMSWAKEUP2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
