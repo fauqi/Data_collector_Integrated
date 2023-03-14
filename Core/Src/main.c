@@ -224,54 +224,89 @@ int main(void)
   while (1)
   {
 
+	  /*
+	   * 											Data Collector work flow
+	   * mula-mula kondisi slot adalah stanby, pada kondisi stanby ini triger wake akan bernilai HIGH dan aktuator akan open,pada kondisi konektor belum dipasangkan pada baterai sehingga CAN baterai belum terbaca
+	   * pada kondisi stanby ini, jika terjadi komunikasi error pada charger maka sistem akan mengirimkan informasi berupa CAN communication Error, sedangkan jika baterai yg error tidak terjadi apa-apa karena dianggap baterai masih belum ditancapkan
+	   * pada kondisi standby saat terjadi hardware failure maka akan masuk mode fault
+	   *
+	   * saat konektor ditancapkan pada baterai dan CAN dari baterai terdeteksi oleh data collector, maka triger wakeup baterai akan low dan mode berubah menjadi swap
+	   * pada kondisi mode swap, jika CAN baterai kembali tidak terdeteksi maka mode akan kembali menjadi stanby dan triger wakeup akan kembali HIGH,
+	   * pada kondisi mode swap jika terjadi error pada charger maka akan mengirimkan notif CAN error state dan sistem tidak bisa dijalankan(lock/start charging)
+	   * pada kondisi mode swap jika diperintah start charging maka perintah tidak akan dilaksanakan, melainkan aktuator harus dipastikan dalam keadaan mengunci dan tidak ada error(fault) pada baterai maupun charger
+	   * seteleah kondisi terpenuhi dan perintah start charging diterima, maka mode akan menjadi charging kemudian batre dan charger akan diset untuk charge
+	   * pada mode swap, saat diberikan perintah lock maka aktuator akan lock, saat unlock maka akan unlock
+	   * pada kondisi mode swap saat terjadi hardware failure maka akan masuk mode fault
+	   *
+	   * pada mode charging, saat CAN baik dari batre maupun charger tidak terbaca selama 5 detik maka akan masuk mode fault, namun jika CAN nya kembali maka akan tetap lanjut charging
+	   * pada mode charging, saat perintah unlock diterima namun kondisi charger masih dalam charging state maka unlock dihiraukan,
+	   * pada mode charging, ketika perintah stop charging diberikan maka charger dan bms akan diset ke state open,
+	   * pada mode charging, ketika baterai sudah full maka led akan masuk mode stanby
+	   * pada mode charging, ketika perintah unlock diterima dan charging sudah di stop maka aktuator akan dibuka dan led akan berubah menjadi mode ready_pick hingga CAN terputus,setelah itu masuk mode stanby
+	   * pada mode charging, saat terjadi hardware failure maka akan masuk mode fault
+	   *
+	   * saat kondisi slot statusnya Fault: jika status sebelumnya adalah standby dan errornya adalah CAN communication error pada charger, maka hanya mengirimkan error tersebut dan saat CAN kembali maka mode akan otomatis ke standby
+	   * 									  jika status sebelumnya adalah swap dan CAN baterai hilang maka mode akan dikembalikan ke standby
+	   * 									  jika status sebelumnya adalah charging, saat jika baterai saja yang CAN nya hilang maka akan terindikasi adanya pencurian
+	   * 									  jika baterai dan charger yang hilang maka yang diindikasi error adalah komunikasinya
+	   *	saat kondisi hardware failure, maka charger dan bms akan diopen
+	   */
+
+//slot1.notif = led_swap;
+//slot2.notif = led_swap;
+
+
+	  switch(slot1.notif)
+	  {
+	  case led_standby:
+		  standby_led(&slot1);
+		  break;
+	  case led_swap:
+		  swap_led(&slot1);
+		  break;
+	  case led_charging:
+		   charging_led(&slot1);
+		   break;
+	  case led_fault:
+		  fault_led(&slot1);
+		  break;
+	  case led_ready_pick:
+		  ready_pick_led(&slot1);
+		  break;
+	  default:
+		  standby_led(&slot1);
+		  break;
+	  }
+
+	  switch(slot2.notif)
+	  {
+	  case led_standby:
+		  standby_led(&slot2);
+		  break;
+	  case led_swap:
+		  swap_led(&slot2);
+		  break;
+	  case led_charging:
+		   charging_led(&slot2);
+		   break;
+	  case led_fault:
+		  fault_led(&slot2);
+		  break;
+	  case led_ready_pick:
+		  ready_pick_led(&slot2);
+		  break;
+	  default:
+		  standby_led(&slot2);
+		  break;
+	  }
+
 	  RS485_Bus_Slave_Process(&rs485_hslave);
-	  	  switch(slot1.notif)
-	 	  {
-	 	  case led_standby:
-	 		 fault_led(&slot1);
-//	 		  standby_led(&slot1);
-	 		  break;
-	 	  case led_swap:
-	 		  swap_led(&slot1);
-	 		  break;
-	 	  case led_charging:
-	 		   charging_led(&slot1);
-	 		   break;
-	 	  case led_fault:
-	 		  fault_led(&slot1);
-	 		  break;
-	 	  case led_ready_pick:
-	 		  ready_pick_led(&slot1);
-	 		  break;
-	 	  default:
-	 		  standby_led(&slot1);
-	 		  break;
-	 	  }
+	  if(slot1.batt_protocol1==1&&slot1.batt_protocol2==1)slot1.isBattery=1;
+	  else slot1.isBattery=0;
+	  if(slot2.batt_protocol1==1&& slot2.batt_protocol2==1)slot2.isBattery=1;
+	  else slot2.isBattery=0;
 
-	 	  switch(slot2.notif)
-	 	  {
-	 	  case led_standby:
-	 		 fault_led(&slot2);
-//	 		  standby_led(&slot2);
-	 		  break;
-	 	  case led_swap:
-	 		  swap_led(&slot2);
-	 		  break;
-	 	  case led_charging:
-	 		   charging_led(&slot2);
-	 		   break;
-	 	  case led_fault:
-	 		  fault_led(&slot2);
-	 		  break;
-	 	  case led_ready_pick:
-	 		  ready_pick_led(&slot2);
-	 		  break;
-	 	  default:
-	 		  standby_led(&slot2);
-	 		  break;
-	 	  }
-
-	 	  switch(slot1.state)
+	  switch(slot1.state)
 		  {
 		  case standby:
 			  slot1.notif=led_standby;
@@ -320,21 +355,80 @@ int main(void)
 			  slot2.state = standby;
 			  break;
 		  }
-	 send_led();
-	CAN_TX();
-if(HAL_GetTick()-tick.led>=2000)
-{
-	HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_7);
-	HAL_GPIO_TogglePin(TRIG1_AKTUATOR1_GPIO_Port, TRIG1_AKTUATOR1_Pin);
-	HAL_GPIO_TogglePin(TRIG2_AKTUATOR1_GPIO_Port, TRIG2_AKTUATOR1_Pin);
-	HAL_GPIO_TogglePin(TRIG1_AKTUATOR2_GPIO_Port, TRIG1_AKTUATOR2_Pin);
-	HAL_GPIO_TogglePin(TRIG2_AKTUATOR2_GPIO_Port, TRIG2_AKTUATOR2_Pin);
-	HAL_GPIO_TogglePin(GNDBMSWAKEUP2_GPIO_Port, GNDBMSWAKEUP2_Pin);
-	HAL_GPIO_TogglePin(GNDBMSWAKEUP1_GPIO_Port, GNDBMSWAKEUP1_Pin);
-	HAL_GPIO_TogglePin(TRIG_ALARM_GPIO_Port, TRIG_ALARM_Pin);
 
-	tick.led=HAL_GetTick();
-}
+
+		  if(slot1.batt_discharge_overcurrent==1||slot1.batt_charge_overCurrent==1||slot1.batt_short_circuit==1||slot1.batt_discharge_overtempreature==1||slot1.batt_discharge_undertempreature==1|| slot1.batt_charge_overtempreature==1||slot1.batt_charge_undertempreature==1||slot1.batt_under_voltage==1||slot1.batt_over_voltage==1||slot1.batt_over_discharge_capacity==1||slot1.batt_unbalance==1|| slot1.batt_system_failure==1|| slot1.charger_hardware_error==1||slot1.charger_temp==1||slot1.charger_input_voltage==1||slot1.charger_work_condition==1||slot1.charger_communication_error==1)
+		  {
+			  slot1.hardware_failure=1;
+		  }
+		  else slot1.hardware_failure=0;
+
+		  if(slot2.batt_discharge_overcurrent==1||slot2.batt_charge_overCurrent==1||slot2.batt_short_circuit==1||slot2.batt_discharge_overtempreature==1||slot2.batt_discharge_undertempreature==1|| slot2.batt_charge_overtempreature==1||slot2.batt_charge_undertempreature==1||slot2.batt_under_voltage==1||slot2.batt_over_voltage==1||slot2.batt_over_discharge_capacity==1||slot2.batt_unbalance==1|| slot2.batt_system_failure==1|| slot2.charger_hardware_error==1||slot2.charger_temp==1||slot2.charger_input_voltage==1||slot2.charger_work_condition==1||slot2.charger_communication_error==1)
+		  {
+			slot2.hardware_failure=1;
+
+		  }
+		  else slot2.hardware_failure=0;
+
+		  if(HAL_GetTick()-can_tx_tick>1000)
+		  {
+//			  counter_todel=counter_todel+1.0;
+//			  Vbatt=Vbatt-(0.001*counter_todel);
+//			  ftoa(Vbatt,cVbatt,2);
+//			  ftoa(Abatt,cAbatt,1);
+//			  ftoa(SOC_batt,cbatt_SOC,2);
+//			  ftoa(Vcharger,cVcharger,2);
+//			  ftoa(Acharger,cAcharger,2);
+//			  intToStr(temp_batt, cbatt_temp,2);
+//			  sprintf(buff,"$fauqi,%s,%s,%s,%s,%s,%s,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,\r\n",cVbatt,cAbatt,cbatt_SOC,cbatt_temp,cVcharger,cAcharger,charger_start_DIS,charger_hardware_error,charger_temp,charger_input_voltage,charger_work_condition,charger_communication_error,batt_discharge_overcurrent,batt_charge_overCurrent,batt_short_circuit,batt_discharge_overtempreature,batt_discharge_undertempreature,batt_charge_overtempreature,batt_charge_undertempreature,batt_under_voltage,batt_over_voltage,batt_over_discharge_capacity,batt_unbalance,batt_system_failure,batt_charge_state,batt_discharge_state,batt_sleep_state);
+//			  strcpy(Tx_Data,buff);
+			  CAN_TX();
+
+	//		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8,GPIO_PIN_SET);
+	//		  HAL_UART_Transmit(&huart1, (uint8_t *)Tx_Data, strlen(Tx_Data), 100);
+	//		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8,GPIO_PIN_RESET);
+			  HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_7);
+			  can_tx_tick=HAL_GetTick();
+
+		  }
+		  if(HAL_GetTick()-current_millis>5000)
+		  {
+			  rutin_cek_can();
+			  current_millis=HAL_GetTick();
+		  }
+
+		  if(slot1.current_lock_state!=slot1.last_lock_state)
+		  {
+			  if(slot1.current_lock_state==0)
+			  {
+				  slot1.trig1_state=0;
+				  slot1.trig2_state=1;
+			  }
+			  else
+			  {
+				  slot1.trig1_state=1;
+				  slot1.trig2_state=0;
+			  }
+			  slot1.current_millis_trig=HAL_GetTick();
+			  slot1.last_lock_state=slot1.current_lock_state;
+		  }
+
+
+		  if(HAL_GetTick()-slot1.current_millis_trig>4000)
+		  {
+			  slot1.trig1_state=0;
+			  slot1.trig2_state=0;
+		  }
+		  if(HAL_GetTick()-slot2.current_millis_trig>4000)
+		  {
+			  slot2.trig1_state=0;
+			  slot2.trig2_state=0;
+		  }
+		  if(slot1.wake_trig)HAL_GPIO_WritePin(GNDBMSWAKEUP1_GPIO_Port, GNDBMSWAKEUP1_Pin, GPIO_PIN_SET);
+		  else HAL_GPIO_WritePin(GNDBMSWAKEUP1_GPIO_Port, GNDBMSWAKEUP1_Pin, GPIO_PIN_RESET);
+		  if(slot2.wake_trig)HAL_GPIO_WritePin(GNDBMSWAKEUP2_GPIO_Port, GNDBMSWAKEUP2_Pin, GPIO_PIN_SET);
+		  else HAL_GPIO_WritePin(GNDBMSWAKEUP2_GPIO_Port, GNDBMSWAKEUP2_Pin, GPIO_PIN_RESET);
+		  send_led();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

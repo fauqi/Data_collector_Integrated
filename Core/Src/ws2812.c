@@ -78,7 +78,7 @@ void WS2812_Send (void)
 		indx++;
 	}
 
-	HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_3, (uint32_t *)slot1.pwmData, indx);
+	HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_2, (uint32_t *)slot1.pwmData, indx);
 	while (!slot1.datasentflag){};
 	slot2.datasentflag = 0;
 }
@@ -126,7 +126,7 @@ void WS2812_Send2 (void)
 		indx++;
 	}
 
-	HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_2, (uint32_t *)slot2.pwmData, indx);
+	HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_3, (uint32_t *)slot2.pwmData, indx);
 
 	while (!slot2.datasentflag){};
 	slot1.datasentflag = 0;
@@ -197,9 +197,9 @@ void fault_led(slot *Slot)
 {
 	  for(int i=0;i<=MAX_LED;i++)
 	  {
-		  if(Slot==&slot1)
-		  Set_LED(Slot,i, 255, 255, 0);
-		  else Set_LED(Slot,i, 255, 0, 0);
+
+		  Set_LED(Slot,i, 255, 0, 0);
+
 	  }
 
 		Set_Brightness(Slot,46);
@@ -216,14 +216,14 @@ void standby_led(slot *Slot)
 void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
 {
 
-	if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_3)
-	{
-		HAL_TIM_PWM_Stop_DMA(&htim1, TIM_CHANNEL_3);
-		slot1.datasentflag=1;
-	}
-	else if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_2)
+	if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_2)
 	{
 		HAL_TIM_PWM_Stop_DMA(&htim1, TIM_CHANNEL_2);
+		slot1.datasentflag=1;
+	}
+	else if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_3)
+	{
+		HAL_TIM_PWM_Stop_DMA(&htim1, TIM_CHANNEL_3);
 		slot2.datasentflag=1;
 	}
 
